@@ -25,13 +25,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/songyijian/tool-event-bus.git"
+    "url": "git+https://github.com/songyijian/tools-event-bus.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/songyijian/tool-event-bus/issues"
+    "url": "https://github.com/songyijian/tools-event-bus/issues"
   },
-  "homepage": "https://github.com/songyijian/tool-event-bus#readme",
+  "homepage": "https://github.com/songyijian/tools-event-bus#readme",
   "devDependencies": {
     "@babel/cli": "^7.11.5",
     "@babel/core": "^7.11.5",
