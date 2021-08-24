@@ -1,4 +1,4 @@
-# @tools/event-bus
+# tools-event-bus
 
 > Publish subscribe tool
 
@@ -6,10 +6,10 @@
 
 ```shell
 # npm
-npm install @tools/event-bus
+npm install tools-event-bus
 
 # yarn
-yarn add @tools/event-bus
+yarn add tools-event-bus
 
 # Browserify
 <script src="../dist/toolsEventBus.iife.js"></script>
