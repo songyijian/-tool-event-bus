@@ -12,7 +12,7 @@ npm install @tools/event-bus
 yarn add @tools/event-bus
 
 # Browserify
-<script src="../dist/@tools/event-bus.iife.js"></script>
+<script src="../dist/toolsEventBus.iife.js"></script>
 ```
 
 # Usage
