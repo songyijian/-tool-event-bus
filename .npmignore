@@ -1,0 +1,12 @@
+.vscode
+.DS_Store
+.babelrc
+.gitignore
+*.log
+*.md
+
+node_modules/
+build/
+demo/
+dist/*
+!/dist/index.js
