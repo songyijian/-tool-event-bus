@@ -8,9 +8,39 @@
   </head>
 
   <body>
-    <div class="box"></div>
+    <div class="box">
+      <button onclick="emit('a')">emit a</button>
+      <button onclick="emit('b')">emit b</button>
+
+      <button onclick="off('a')">off a</button>
+      <button onclick="off('b')">off b</button>
+
+      <button onclick="log()">log</button>
+    </div>
     <script>
-      console.log(window.toolsEventBus)
+      var EventBus = window.toolsEventBus
+      var myEventBus = new EventBus('You can give bus name')
+
+      var fna = () => alert(1)
+      var fna2 = () => alert(2)
+      var fna3 = () => alert(3)
+
+      myEventBus.once('a', fna)
+      myEventBus.on('a', fna2)
+      myEventBus.on('a', fna3)
+      myEventBus.on('a', fna3)
+
+      myEventBus.once('b', fna)
+      myEventBus.on('b', fna2)
+      myEventBus.on('b', fna3)
+
+      var emit = a => myEventBus.emit(a)
+      var off = a => myEventBus.off(a, fna2)
+
+      function log() {
+        console.log(EventBus, myEventBus, [fna, fna2, fna3])
+      }
+      log()
     </script>
   </body>
 </html>

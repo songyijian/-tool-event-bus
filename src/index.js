@@ -1,18 +1,6 @@
 'use strict'
 
-const _key_ = Symbol('injectionSign')
-function injection(_this, type, fn, sign) {
-  if (typeof fn === 'function' && typeof type === 'string') {
-    const tls = _this.dp[type] || (_this.dp[type] = [])
-    if (tls.indexOf(fn) < 0) {
-      fn[_key_] = sign
-      tls.push(fn)
-    }
-  }
-  return _this
-}
-
-////////////////////////////////////////////////
+const _flag_ = Symbol()
 
 function EventBus(name) {
   this.dp = {}
@@ -20,28 +8,42 @@ function EventBus(name) {
 }
 
 EventBus.prototype.on = function (type, fn) {
-  return injection(this, type, fn, 'on')
+  if (typeof fn === 'function' && typeof type === 'string') {
+    ;(this.dp[type] || (this.dp[type] = [])).push(fn)
+  }
+  return this
 }
 
 EventBus.prototype.once = function (type, fn) {
-  return injection(this, type, fn, 'once')
+  const _this = this
+  function onfn(...args) {
+    _this.off(type, onfn)
+    fn.call(_this, ...args)
+  }
+  Object.defineProperty(onfn, _flag_, {
+    writable: false,
+    numerable: false,
+    value: fn
+  })
+  this.on(type, onfn)
+  return this
 }
 
 EventBus.prototype.emit = function (type, ...args) {
   const emitList = this.dp[type]
   if (!emitList) return this
-  this.dp[type] = [...emitList].filter(item => {
-    item.call(this, ...args)
-    item['_key_'] === 'once' && delete item['_key_']
-    return item['_key_'] === 'on'
-  })
+  ;[...emitList].forEach(item => item.call(this, ...args))
   return this
 }
 
 EventBus.prototype.off = function (type, fn) {
+  if (!arguments.length) {
+    this.db = {}
+    return this
+  }
   let offs = this.dp[type]
   if (offs) {
-    !fn ? delete this.dp[type] : (this.dp[type] = offs.filter(item => item !== fn))
+    !fn ? delete this.dp[type] : (this.dp[type] = offs.filter(item => !(item === fn || item[_flag_] === fn)))
   }
   return this
 }
