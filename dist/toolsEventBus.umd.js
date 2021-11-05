@@ -1,1 +1,100 @@
-!function(t,n){"object"==typeof exports&&"undefined"!=typeof module?module.exports=n():"function"==typeof define&&define.amd?define(n):(t="undefined"!=typeof globalThis?globalThis:t||self).toolsEventBus=n()}(this,function(){"use strict";function u(t){return function(t){if(Array.isArray(t))return r(t)}(t)||function(t){if("undefined"!=typeof Symbol&&null!=t[Symbol.iterator]||null!=t["@@iterator"])return Array.from(t)}(t)||function(t,n){if(t){if("string"==typeof t)return r(t,n);var e=Object.prototype.toString.call(t).slice(8,-1);return"Map"===(e="Object"===e&&t.constructor?t.constructor.name:e)||"Set"===e?Array.from(t):"Arguments"===e||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(e)?r(t,n):void 0}}(t)||function(){throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.")}()}function r(t,n){(null==n||n>t.length)&&(n=t.length);for(var e=0,r=new Array(n);e<n;e++)r[e]=t[e];return r}function e(t,n,e,r){"function"==typeof e&&"string"==typeof n&&(t.dp[n]||(t.dp[n]=[])).push({func:e,type:r})}function t(t){this.dp={},this.name=t}return t.prototype.on=function(t,n){return e(this,t,n,"on"),this},t.prototype.once=function(t,n){return e(this,t,n,"once"),this},t.prototype.emit=function(t){for(var e=this,n=arguments.length,r=new Array(1<n?n-1:0),o=1;o<n;o++)r[o-1]=arguments[o];var i=this.dp[t];return i&&(this.dp[t]=u(i).filter(function(t){var n;return(n=t.func).call.apply(n,[e].concat(r)),"on"===t.type})),this},t.prototype.off=function(t,n){var e=this.dp[t];return e&&(n?this.dp[t]=e.filter(function(t){return t.func!==n}):delete this.dp[t]),this},t});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.toolsEventBus = factory());
+}(this, (function () { 'use strict';
+
+  function _toConsumableArray(arr) {
+    return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+  }
+
+  function _arrayWithoutHoles(arr) {
+    if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+  }
+
+  function _iterableToArray(iter) {
+    if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+  }
+
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+  }
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+
+    for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+
+  function _nonIterableSpread() {
+    throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+  }
+
+  var _key_ = Symbol('injectionSign');
+
+  function injection(_this, type, fn, sign) {
+    if (typeof fn === 'function' && typeof type === 'string') {
+      var tls = _this.dp[type] || (_this.dp[type] = []);
+
+      if (tls.indexOf(fn) < 0) {
+        fn[_key_] = sign;
+        tls.push(fn);
+      }
+    }
+
+    return _this;
+  } ////////////////////////////////////////////////
+
+
+  function EventBus(name) {
+    this.dp = {};
+    this.name = name;
+  }
+
+  EventBus.prototype.on = function (type, fn) {
+    return injection(this, type, fn, 'on');
+  };
+
+  EventBus.prototype.once = function (type, fn) {
+    return injection(this, type, fn, 'once');
+  };
+
+  EventBus.prototype.emit = function (type) {
+    var _this2 = this;
+
+    for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    var emitList = this.dp[type];
+    if (!emitList) return this;
+    this.dp[type] = _toConsumableArray(emitList).filter(function (item) {
+      item.call.apply(item, [_this2].concat(args));
+      item['_key_'] === 'once' && delete item['_key_'];
+      return item['_key_'] === 'on';
+    });
+    return this;
+  };
+
+  EventBus.prototype.off = function (type, fn) {
+    var offs = this.dp[type];
+
+    if (offs) {
+      !fn ? delete this.dp[type] : this.dp[type] = offs.filter(function (item) {
+        return item !== fn;
+      });
+    }
+
+    return this;
+  };
+
+  return EventBus;
+
+})));
