@@ -1,6 +1,6 @@
 {
   "name": "@tools/event-bus",
-  "version": "0.3.0",
+  "version": "0.2.2",
   "description": "Publish subscribe tool",
   "main": "./src/index.js",
   "keywords": [
